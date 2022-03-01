@@ -4,7 +4,9 @@ class GamesController < ApplicationController
   end
 
   def create
-    Game.create!(status: 'in_progress')
-    render plain: "game started! Let's start next section."
+    game = Game.create!(status: 'in_progress')
+    # prefixのあるパスに対象のオブジェクトを引数で渡すと、
+    # 自動でidを検索してくれて、よしなにパスを生成してくれる
+    redirect_to new_game_progresses_path(game)
   end
 end
