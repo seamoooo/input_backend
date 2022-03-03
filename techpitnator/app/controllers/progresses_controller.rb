@@ -2,7 +2,8 @@ class ProgressesController < ApplicationController
 
   def new
     @progress = Progress.new
-    @question = Question.first
+    current_game = Game.find(params[:game_id])
+    @question = Question.next_question(current_game)
   end
 
   def create
