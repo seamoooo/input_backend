@@ -12,8 +12,9 @@ class ProgressesController < ApplicationController
     # Progress.newにしないことで、game_idがバインドされて生成さる
     progress = current_game.progress.new(create_params)
     progress.assign_squence
-
     progress.save!
+
+    @extact_commics = ExtractionAlgorithm.new(current_game).compute
 
     next_question = Question.next_question(current_game)
     if next_question.blank?
