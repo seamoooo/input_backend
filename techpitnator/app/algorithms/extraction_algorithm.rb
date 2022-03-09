@@ -9,15 +9,34 @@ class ExtractionAlgorithm
   end
   
   def compute
-    binding.pry
     progresses = @game.progress
     progresses.each do |progress|
       # question
       question = progress.question
 
+      case question.algorithm
+        # algorithmにはserialization_endしか入らない想定
+        when 'serialization_end'
+          serialization_end?(progress)
+        else
+          raise Exception('invalid algorithm. -->' + question.algorithm.to_s)
+      end
+
       Rails.logger.debug('On the way query is ' + @query.to_sql.to_s)
       Rails.logger.debug('On the way comics are ' + @query.pluck(:title).to_a.to_s)
     end
     @query
+  end
+
+  private
+
+  def serialization_end?(progress)
+    if progress.answer == "positive"
+      @query = @query.where.not("comics.serialization_end_year is null")
+    end
+
+    if progress.answer == "negative"
+      @query = @query.where("comics.serialization_end_year is null")
+    end
   end
 end
