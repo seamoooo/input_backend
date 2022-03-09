@@ -16,6 +16,18 @@ class ProgressesController < ApplicationController
 
     @extact_commics = ExtractionAlgorithm.new(current_game).compute
 
+   # 絞り込み結果が0件の場合、ギブアップ画面へ遷移
+   if @extact_commics.count == 0
+    redirect_to give_up_game_path(current_game)
+    return
+   end
+
+    # 絞り込み結果が1件の場合、チャレンジへ遷移
+    if @extact_commics.count == 1
+      redirect_to challenge_game_path(current_game)
+      return
+    end
+
     next_question = Question.next_question(current_game)
     if next_question.blank?
 
