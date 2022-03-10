@@ -16,6 +16,8 @@ class ExtractionAlgorithm
 
       case question.algorithm
         # algorithmにはserialization_endしか入らない想定
+        when 'genre_match'
+          genre_match(progress)
         when 'serialization_end'
           serialization_end?(progress)
         else
@@ -38,5 +40,17 @@ class ExtractionAlgorithm
     if progress.answer == "negative"
       @query = @query.where("comics.serialization_end_year is null")
     end
+  end
+
+  def genre_match(progress)
+
+    if progress.answer == "positive"
+      @query = @query.where("comics.genre like ?", "%#{progress.question.eval_value}%")
+    end
+
+    if progress.answer == "negative"
+      @query = @query.where.not("comics.genre like ?", "%#{progress.question.eval_value}%")
+    end
+
   end
 end

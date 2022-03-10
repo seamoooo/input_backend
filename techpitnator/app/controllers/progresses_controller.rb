@@ -28,19 +28,20 @@ class ProgressesController < ApplicationController
       return
     end
 
-    next_question = Question.next_question(current_game)
-    if next_question.blank?
+    if @extact_commics.count >= 2
+      next_question = Question.next_question(current_game)
+      if next_question.blank?
 
-      current_game.status = 'finished'
-      current_game.result = 'incorrect'
-      current_game.save!
-
-      redirect_to give_up_game_path(current_game)
-      # redirect先が二つあるので、retrunで処理を終了させる必要がある。
+        current_game.status = 'finished'
+        current_game.result = 'incorrect'
+        current_game.save!
+        redirect_to give_up_game_path(current_game)
+        # redirect先が二つあるので、retrunで処理を終了させる必要がある。
+        return
+      end
+      redirect_to new_game_progresses_path(current_game)
       return
     end
-  
-    redirect_to new_game_progresses_path(current_game)
   end
 
   private
